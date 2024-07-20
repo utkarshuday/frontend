@@ -12,10 +12,11 @@ import Analysis from './Analysis';
 import AnalysisInput from '@/components/AnalysisInput';
 
 export default function Home({ channelId, value, setValue }) {
-  const { data, isLoading } = useSWRImmutable(
+  const { data, isLoading, error } = useSWRImmutable(
     `/channel-details/${channelId}`,
     getStats
   );
+  console.log(error);
   // const isLoading = false;
   const channelDetails = !isLoading &&
     data && {
@@ -54,7 +55,7 @@ export default function Home({ channelId, value, setValue }) {
   });
   return (
     <div className='max-w-[1200px] mx-auto sm:p-5 p-3'>
-      {!isLoading && data ? (
+      {!isLoading && !error && data ? (
         <>
           <ChannelDetails details={channelDetails} />
           <div>
@@ -100,7 +101,9 @@ export default function Home({ channelId, value, setValue }) {
         </>
       ) : (
         <div className='flex items-center justify-center mt-20'>
-          {isLoading ? 'Analyzing channel...' : 'Look for a channel'}
+          {error && error.message}
+          {isLoading && !error && 'Analyzing channel...'}
+          {!isLoading && !error && 'Look for a channel'}
         </div>
       )}
     </div>

@@ -6,14 +6,15 @@ import useSWRImmutable from 'swr/immutable';
 export default function Analysis({ data, videoTitle, videoId }) {
   console.log(videoId);
   console.log(data[0]);
-  const { data: videoDetail, isLoading } = useSWRImmutable(
-    `/sentiments/${videoId}`,
-    getSentiments
-  );
+  const {
+    data: videoDetail,
+    isLoading,
+    error,
+  } = useSWRImmutable(`/sentiments/${videoId}`, getSentiments);
   console.log(videoDetail, isLoading);
   return (
     <>
-      {!isLoading && videoDetail ? (
+      {!isLoading && !error && videoDetail ? (
         <div className='grid grid-cols-1 lg:grid-rows-2 lg:grid-cols-[2fr,1fr,1fr] lg:gap-x-4 lg:gap-y-0 gap-4 lg:max-w-[none] max-w-[500px] mx-auto lg:mx-0'>
           <div className='lg:row-span-3 lg:col-span-1 '>
             <AnalysisChart
@@ -42,8 +43,9 @@ export default function Analysis({ data, videoTitle, videoId }) {
           />
         </div>
       ) : (
-        <div className='mt-20 flex items-center justify-center'>
-          Analyzing data...
+        <div className='h-40 flex items-center justify-center'>
+          {error && error.message}
+          {isLoading && !error && 'Analyzing data...'}
         </div>
       )}
     </>

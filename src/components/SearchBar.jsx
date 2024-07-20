@@ -23,13 +23,13 @@ export default function SearchBar({
   const outsideRef = useOutsideClick(setOpen);
   const ref = useRef(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const inputFocus = () => {
     if (ref.current) ref.current.focus();
   };
 
   const submitHandler = e => {
-    console.log('Hello');
     e.preventDefault();
     setIsHidden(true);
     setText('');
@@ -44,20 +44,29 @@ export default function SearchBar({
     const controller = new AbortController();
     if (debouncedText.length <= 3) {
       setOptions([]);
+      setLoading(false);
+      setError('');
       return;
     }
     (async () => {
       setLoading(true);
+      setError('');
       const response = await axios.get(`${URL}/channels/${debouncedText}`, {
         signal: controller.signal,
       });
+      if (response.data?.message) {
+        setLoading(false);
+        setOptions([]);
+        setError(response.data.message);
+        return;
+      }
       console.log(response.data);
       const options = response.data.map(option => ({
         label: option.channelTitle,
         value: option.channelId,
       }));
-      console.log(options);
       setOptions(options);
+      setError('');
       setLoading(false);
     })();
 
@@ -108,13 +117,15 @@ export default function SearchBar({
                 ))}
               </>
             ) : (
-              <div className='flex items-center text-sm font-medium justify-center h-20'>
+              <div className='flex items-center text-sm font-medium justify-center h-20 p-4'>
                 <p>
-                  {!loading
-                    ? text.length !== 0
-                      ? 'No results'
-                      : 'Nothing to search'
-                    : 'Searching...'}
+                  {!loading &&
+                    !error &&
+                    text.length === 0 &&
+                    'Nothing to search'}
+                  {!loading && !error && text.length !== 0 && 'No results'}
+                  {loading && !error && 'Searching...'}
+                  {!loading && error}
                 </p>
               </div>
             )}

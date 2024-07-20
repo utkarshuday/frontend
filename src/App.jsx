@@ -10,9 +10,8 @@ import { cn } from './lib/utils';
 function App() {
   const [channelId, setChannelId] = useState('');
   const [value, setValue] = useState('table');
-  const [isHidden, setIsHidden] = useState(false);
+  const [isHidden, setIsHidden] = useState(true);
 
-  console.log(channelId);
   return (
     <ThemeProvider defaultTheme='dark' storageKey='vite-ui-theme'>
       <div className='flex items-center justify-between mb-4 max-w-[1200px] mx-auto md:p-5 p-3'>
