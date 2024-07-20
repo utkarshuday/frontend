@@ -7,8 +7,14 @@ import { Input } from './ui/input';
 import { Search } from 'lucide-react';
 import useOutsideClick from '@/lib/hooks/useOutsideClick';
 import { URL } from '@/lib/requests';
+import { cn } from '@/lib/utils';
 
-export default function SearchBar({ search, setValue }) {
+export default function SearchBar({
+  search,
+  setValue,
+  className,
+  setIsHidden,
+}) {
   const [options, setOptions] = useState([]);
   const [channelId, setChannelId] = useState('');
   const [text, setText] = useState('');
@@ -23,7 +29,9 @@ export default function SearchBar({ search, setValue }) {
   };
 
   const submitHandler = e => {
+    console.log('Hello');
     e.preventDefault();
+    setIsHidden(true);
     setText('');
     setChannelId('');
     setOpen(false);
@@ -31,6 +39,7 @@ export default function SearchBar({ search, setValue }) {
     if (ref.current) ref.current.blur();
     search(channelId);
   };
+
   useEffect(() => {
     const controller = new AbortController();
     if (debouncedText.length <= 3) {
@@ -59,8 +68,11 @@ export default function SearchBar({ search, setValue }) {
 
   return (
     <>
-      <div className='relative' ref={outsideRef}>
-        <form onSubmit={submitHandler} className='flex gap-4'>
+      <div className={cn('relative sm:block', className)} ref={outsideRef}>
+        <form
+          onSubmit={submitHandler}
+          className='grid grid-cols-[1fr,auto] gap-4'
+        >
           <Input
             ref={ref}
             placeholder='Search a channel...'
@@ -69,15 +81,14 @@ export default function SearchBar({ search, setValue }) {
               if (e.target.value === '') setOpen(true);
               setText(e.target.value);
             }}
-            className='w-[300px]'
             onFocus={() => setOpen(true)}
           />
           <Button type='submit'>
-            <Search className='h-5 w-5' />
+            <Search className='h-4 w-4' />
           </Button>
         </form>
         {open && (
-          <Card className='mt-3 shadow-lg dark:shadow-slate-900 max-h-72 z-50 absolute rounded-lg overflow-x-hidden flex flex-col items-stretch justify-start -left-2 right-0 py-2'>
+          <Card className='mt-3 shadow-lg dark:shadow-slate-900 max-h-72 z-50 absolute rounded-lg overflow-x-hidden flex flex-col items-stretch justify-start sm:-left-2 sm:right-0 -left-6 -right-10 py-2'>
             {options.length > 0 ? (
               <>
                 {options.map(option => (

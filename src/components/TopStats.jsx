@@ -1,4 +1,4 @@
-import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
+import { Area, AreaChart, CartesianGrid, XAxis } from 'recharts';
 import {
   Card,
   CardContent,
@@ -41,21 +41,21 @@ export default function TopStats({ chartData, details }) {
 
   return (
     <Card>
-      <CardHeader className='flex flex-col items-stretch space-y-0 border-b p-0 md:flex-row'>
-        <div className='flex flex-1 flex-col justify-center gap-1 px-6 py-5 md:py-6'>
+      <CardHeader className='flex flex-col items-stretch space-y-0 border-b p-0 lg:flex-row'>
+        <div className='flex flex-1 flex-col justify-center gap-1 px-6 py-5 lg:py-6'>
           <CardTitle>Top Charts</CardTitle>
           <CardDescription>
-            Showing performance of the top {chartData.length} videos
+            Showing performance of the top videos
           </CardDescription>
         </div>
-        <div className='flex'>
+        <div className='flex sm:flex-row flex-col'>
           {['views', 'likes', 'comments'].map(key => {
             const chart = key;
             return (
               <button
                 key={chart}
                 data-active={activeChart === chart}
-                className='relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l data-[active=true]:bg-muted/50 md:border-l md:border-t-0 md:px-8 md:py-6'
+                className='relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left  data-[active=true]:bg-muted/50 sm:border-r sm:last:border-r-0 lg:first:border-l  lg:border-t-0 lg:px-8 lg:py-6'
                 onClick={() => setActiveChart(chart)}
               >
                 <span className='text-xs text-muted-foreground md:whitespace-nowrap'>
@@ -74,12 +74,13 @@ export default function TopStats({ chartData, details }) {
           config={chartConfig}
           className='aspect-auto h-[250px] w-full'
         >
-          <BarChart
+          <AreaChart
             accessibilityLayer
             data={chartData}
             margin={{
               left: 12,
               right: 12,
+              top: 16,
             }}
           >
             <CartesianGrid vertical={false} />
@@ -87,7 +88,8 @@ export default function TopStats({ chartData, details }) {
               dataKey='title'
               tickLine={false}
               axisLine={false}
-              minTickGap={5}
+              tickMargin={8}
+              interval='preserveStartEnd'
               tickFormatter={(value, index) =>
                 index === 0 || (index + 1) % 5 === 0 ? index + 1 : ''
               }
@@ -95,8 +97,14 @@ export default function TopStats({ chartData, details }) {
             <ChartTooltip
               content={<ChartTooltipContent className='w-[200px]' />}
             />
-            <Bar dataKey={activeChart} fill={`var(--color-${activeChart})`} />
-          </BarChart>
+            <Area
+              dataKey={activeChart}
+              type='natural'
+              fill={`var(--color-${activeChart})`}
+              fillOpacity={0.4}
+              stroke={`var(--color-${activeChart})`}
+            />
+          </AreaChart>
         </ChartContainer>
       </CardContent>
     </Card>

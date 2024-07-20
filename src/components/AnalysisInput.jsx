@@ -38,7 +38,7 @@ function AutocompleteInput({ data, search }) {
             if (e.target.value === '') setOpen(true);
             setValue(e.target.value);
           }}
-          className='w-[300px]'
+          className='w-[300px] flex-1'
           onFocus={() => setOpen(true)}
         />
         <Button type='submit'>
@@ -46,7 +46,7 @@ function AutocompleteInput({ data, search }) {
         </Button>
       </form>
       {open && (
-        <Card className='mt-3 shadow-lg dark:shadow-slate-900 max-h-72 z-50 absolute rounded-lg overflow-x-hidden flex flex-col items-stretch justify-start -left-2 right-0 py-2'>
+        <Card className='mt-3 shadow-lg dark:shadow-slate-900 max-h-72 z-50 absolute rounded-lg overflow-x-hidden flex flex-col items-stretch justify-start left-0 right-0 py-2'>
           {filteredData.length > 0 ? (
             <>
               {filteredData.map(video => (

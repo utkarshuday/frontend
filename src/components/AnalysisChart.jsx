@@ -12,13 +12,6 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart';
-// const chartData = [
-//   { reaction: 'Overjoyed', comments: 186 },
-//   { reaction: 'Happy', comments: 305 },
-//   { reaction: 'Neutral', comments: 237 },
-//   { reaction: 'Disliked', comments: 73 },
-//   { reaction: 'Angry', comments: 209 },
-// ];
 
 const chartConfig = {
   comments: {
@@ -37,12 +30,14 @@ export default function AnalysisChart({ reactions, videoTitle }) {
   ];
   return (
     <Card className='mb-0'>
-      <CardHeader>
-        <CardTitle>Sentiment Analysis</CardTitle>
-        <CardDescription>{videoTitle}</CardDescription>
+      <CardHeader className='p-3 md:p-6'>
+        <CardTitle className='sm:text-2xl text-xl'>
+          Sentiments Analysis
+        </CardTitle>
+        <CardDescription className='text-sm'>{videoTitle}</CardDescription>
       </CardHeader>
-      <CardContent>
-        <ChartContainer config={chartConfig} className='min-h-[200px] '>
+      <CardContent className='p-3 md:p-6 pb-0'>
+        <ChartContainer config={chartConfig} className='sm:min-h-[200px] '>
           <AreaChart
             accessibilityLayer
             data={chartData}
@@ -75,7 +70,7 @@ export default function AnalysisChart({ reactions, videoTitle }) {
           </AreaChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter className='flex-col items-start gap-2 text-sm'>
+      <CardFooter className='flex-col items-start gap-2 text-sm p-4 sm:p-6 sm:pt-0 pt-2 '>
         <div className='leading-none text-muted-foreground'>
           Sentiments of viewers who commented on this video
         </div>

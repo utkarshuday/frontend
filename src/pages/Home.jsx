@@ -53,19 +53,17 @@ export default function Home({ channelId, value, setValue }) {
     onSearching,
   });
   return (
-    <div className='max-w-[1200px] mx-auto p-5'>
+    <div className='max-w-[1200px] mx-auto sm:p-5 p-3'>
       {!isLoading && data ? (
         <>
           <ChannelDetails details={channelDetails} />
           <div>
             <Tabs value={value} onValueChange={value => setValue(value)}>
-              <div className='flex justify-between mb-4 mt-8'>
+              <div className='flex flex-col justify-between md:flex-row gap-4 items-stretch mb-4 mt-8'>
                 <TabsList>
                   <TabsTrigger value='table'>Statistics</TabsTrigger>
                   <TabsTrigger value='top'>Top Charts</TabsTrigger>
-                  <TabsTrigger value='sentiment'>
-                    Sentiments Analysis
-                  </TabsTrigger>
+                  <TabsTrigger value='sentiment'>Sentiments</TabsTrigger>
                 </TabsList>
                 {value === 'table' && <ColumnSelector table={table} />}
                 {value === 'sentiment' && (
@@ -86,7 +84,7 @@ export default function Home({ channelId, value, setValue }) {
                 <div>
                   <TopStats
                     details={channelDetails}
-                    chartData={data.videoDetails.slice(0, 50)}
+                    chartData={data.videoDetails.slice(0, 80)}
                   />
                 </div>
               </TabsContent>

@@ -1,5 +1,4 @@
 import { format } from 'date-fns';
-import { truncateString } from '@/lib/utils';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,7 +13,11 @@ export const columns = [
     accessorKey: 'published',
     header: 'Upload Date',
     cell: ({ row }) => {
-      return format(new Date(row.getValue('published')), 'PPP');
+      return (
+        <div className='truncate'>
+          {format(new Date(row.getValue('published')), 'PPP')}
+        </div>
+      );
     },
   },
   {
@@ -22,7 +25,9 @@ export const columns = [
     header: 'Title',
     enableHiding: false,
     cell: ({ row }) => {
-      return truncateString(row.getValue('title'), 60);
+      return (
+        <div className='truncate max-w-[450px]'>{row.getValue('title')}</div>
+      );
     },
   },
   {
@@ -67,7 +72,7 @@ export const columns = [
                 table.options.meta.onSearching(channel.id, channel.title)
               }
             >
-              Sentiment Analysis
+              Check sentiments
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

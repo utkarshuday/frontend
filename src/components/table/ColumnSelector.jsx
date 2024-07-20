@@ -12,7 +12,7 @@ function ColumnSelector({ table }) {
     <div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant='outline' className=' ml-auto'>
+          <Button variant='outline' className='hidden sm:flex ml-auto'>
             Columns
             <ChevronDown className='ml-2 h-4 w-4' />
           </Button>
