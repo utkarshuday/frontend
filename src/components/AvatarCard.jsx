@@ -11,7 +11,7 @@ import { truncateString } from '@/lib/utils';
 
 function AvatarCard({ details }) {
   return (
-    <Card className='p-4 max-w-[400px] flex flex-col justify-center'>
+    <Card className='p-4 lg:max-w-[400px] flex flex-col justify-center'>
       <CardHeader className='p-0 flex-row items-center gap-4 space-y-0 mb-2'>
         <Avatar>
           <AvatarImage src={details.thumbnail} alt='profile' />

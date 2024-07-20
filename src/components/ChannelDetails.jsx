@@ -4,7 +4,7 @@ import AvatarCard from './AvatarCard';
 
 export default function ChannelDetails({ details }) {
   return (
-    <div className='grid gap-4 grid-cols-[auto,5fr,4fr,4fr] mb-4'>
+    <div className='grid gap-4 lg:grid-cols-[auto,5fr,4fr,4fr] sm:grid-cols-2 mb-4'>
       <AvatarCard details={details} />
       <StatsCard
         title='Total Views'
