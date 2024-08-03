@@ -21,7 +21,7 @@ function App() {
     <ThemeProvider defaultTheme='dark' storageKey='vite-ui-theme'>
       <div className='flex items-center justify-between mb-4 max-w-[1200px] mx-auto md:p-5 p-3'>
         <Logo isHidden={isHidden} setChannelId={setChannelId}>
-          YoutubeAnalysis
+          YoutubeAnalysis {import.meta.env.VITE_API_URL}
         </Logo>
         <div
           className={cn(
