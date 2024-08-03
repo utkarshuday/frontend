@@ -20,7 +20,6 @@ function AutocompleteInput({ data, search }) {
     setValue('');
     setOpen(false);
     if (ref.current) ref.current.blur();
-    console.log(videoId, value);
     if (videoId) search(videoId, value);
   };
   const inputFocus = () => {

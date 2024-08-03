@@ -7,17 +7,23 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import useTable from '@/lib/hooks/useTable';
 import ColumnSelector from '@/components/table/ColumnSelector';
 import { useEffect, useState } from 'react';
-import TopStats from '@/components/TopStats';
-import Analysis from './Analysis';
+import TopStats from '@/components/TopCharts';
+import Analysis from '../components/Analysis';
 import AnalysisInput from '@/components/AnalysisInput';
+import ErrorBlock from '@/components/ErrorBlock';
+import Landing from '@/components/Landing';
 
-export default function Home({ channelId, value, setValue }) {
+export default function Home({
+  channelId,
+  value,
+  setValue,
+  inputRef,
+  setIsHidden,
+}) {
   const { data, isLoading, error } = useSWRImmutable(
-    `/channel-details/${channelId}`,
+    channelId ? `/channel-details/${channelId}` : null,
     getStats
   );
-  console.log(error);
-  // const isLoading = false;
   const channelDetails = !isLoading &&
     data && {
       channelTitle: data.channelTitle,
@@ -42,12 +48,10 @@ export default function Home({ channelId, value, setValue }) {
   }, [isLoading, data]);
 
   const onSearching = (vId, vTitle) => {
-    console.log(vId, vTitle);
     setVideoId(vId);
     setVideoTitle(vTitle);
     setValue('sentiment');
   };
-  console.log(videoId, videoTitle);
   const { table } = useTable({
     data: data?.videoDetails || [],
     columns,
@@ -82,12 +86,10 @@ export default function Home({ channelId, value, setValue }) {
                 />
               </TabsContent>
               <TabsContent value='top'>
-                <div>
-                  <TopStats
-                    details={channelDetails}
-                    chartData={data.videoDetails.slice(0, 80)}
-                  />
-                </div>
+                <TopStats
+                  details={channelDetails}
+                  chartData={data.videoDetails.slice(0, 80)}
+                />
               </TabsContent>
               <TabsContent value='sentiment'>
                 <Analysis
@@ -100,10 +102,17 @@ export default function Home({ channelId, value, setValue }) {
           </div>
         </>
       ) : (
-        <div className='flex items-center justify-center mt-20'>
-          {error && error.message}
-          {isLoading && !error && 'Analyzing channel...'}
-          {!isLoading && !error && 'Look for a channel'}
+        <div className='flex items-center justify-center'>
+          {error && <ErrorBlock message={error.message} />}
+          {isLoading && !error && (
+            <div className='min-h-[50vh] flex justify-center items-center flex-col'>
+              <div className='loader mb-4'></div>
+              <p>Analyzing channel...</p>
+            </div>
+          )}
+          {!isLoading && !error && (
+            <Landing inputRef={inputRef} setIsHidden={setIsHidden} />
+          )}
         </div>
       )}
     </div>

@@ -1,65 +1,51 @@
 import Home from './pages/Home';
 import ThemeProvider from './components/ThemeProvider';
-import { useState } from 'react';
-import SearchBar from './components/SearchBar';
+import { useEffect, useRef, useState } from 'react';
 import { ModeToggle } from './components/ModeToggle';
-import { ArrowLeft, Search } from 'lucide-react';
-import { Button } from './components/ui/button';
 import { cn } from './lib/utils';
+import Logo from './components/Logo';
+import ResponsiveSearchBar from './components/ResponsiveSearchBar';
+import './App.css';
 
 function App() {
   const [channelId, setChannelId] = useState('');
   const [value, setValue] = useState('table');
   const [isHidden, setIsHidden] = useState(true);
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (!isHidden && inputRef.current) inputRef.current.focus();
+  }, [isHidden]);
 
   return (
     <ThemeProvider defaultTheme='dark' storageKey='vite-ui-theme'>
       <div className='flex items-center justify-between mb-4 max-w-[1200px] mx-auto md:p-5 p-3'>
-        <h1
-          className={cn(
-            'sm:text-3xl text-2xl font-bold sm:block',
-            !isHidden && 'hidden'
-          )}
-        >
+        <Logo isHidden={isHidden} setChannelId={setChannelId}>
           YoutubeAnalysis
-        </h1>
+        </Logo>
         <div
           className={cn(
             'grid sm:gap-6 gap-3 grid-cols-[1fr,auto]',
             !isHidden && 'flex-1 sm:flex-initial'
           )}
         >
-          <div className='flex'>
-            <Button
-              variant='ghost'
-              className={cn(
-                'sm:hidden px-0 pr-4 hover:bg-transparent',
-                isHidden && 'hidden'
-              )}
-              onClick={() => setIsHidden(true)}
-            >
-              <ArrowLeft className='h-5 w-5' />
-            </Button>
-            <SearchBar
-              search={setChannelId}
-              setIsHidden={setIsHidden}
-              setValue={setValue}
-              className={cn(isHidden && 'hidden', 'flex-1')}
-            />
-            {isHidden && (
-              <Button
-                type='button'
-                className='sm:hidden'
-                onClick={() => setIsHidden(false)}
-              >
-                <Search className='h-4 w-4 p-0' />
-              </Button>
-            )}
-          </div>
+          <ResponsiveSearchBar
+            inputRef={inputRef}
+            isHidden={isHidden}
+            setIsHidden={setIsHidden}
+            setChannelId={setChannelId}
+            setValue={setValue}
+          />
           <ModeToggle />
         </div>
       </div>
-      <Home channelId={channelId} value={value} setValue={setValue} />
+      <Home
+        channelId={channelId}
+        value={value}
+        setValue={setValue}
+        inputRef={inputRef}
+        setIsHidden={setIsHidden}
+      />
     </ThemeProvider>
   );
 }

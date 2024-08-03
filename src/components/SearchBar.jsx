@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useDebounce } from 'use-debounce';
 import { Card } from './ui/card';
@@ -10,6 +10,7 @@ import { URL } from '@/lib/requests';
 import { cn } from '@/lib/utils';
 
 export default function SearchBar({
+  inputRef,
   search,
   setValue,
   className,
@@ -21,23 +22,27 @@ export default function SearchBar({
   const [debouncedText] = useDebounce(text, 500);
   const [open, setOpen] = useState(false);
   const outsideRef = useOutsideClick(setOpen);
-  const ref = useRef(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const inputFocus = () => {
-    if (ref.current) ref.current.focus();
-  };
-
-  const submitHandler = e => {
-    e.preventDefault();
+  const reset = () => {
     setIsHidden(true);
     setText('');
     setChannelId('');
     setOpen(false);
     setValue('table');
-    if (ref.current) ref.current.blur();
+    if (inputRef.current) inputRef.current.blur();
+  };
+
+  const submitHandler = e => {
+    e.preventDefault();
+    reset();
     search(channelId);
+  };
+
+  const buttonHandler = id => {
+    reset();
+    search(id);
   };
 
   useEffect(() => {
@@ -49,25 +54,28 @@ export default function SearchBar({
       return;
     }
     (async () => {
-      setLoading(true);
-      setError('');
-      const response = await axios.get(`${URL}/channels/${debouncedText}`, {
-        signal: controller.signal,
-      });
-      if (response.data?.message) {
+      try {
+        setLoading(true);
+        setError('');
+        const response = await axios.get(`${URL}/channels/${debouncedText}`, {
+          signal: controller.signal,
+        });
+        const options = response.data.map(option => ({
+          label: option.channelTitle,
+          value: option.channelId,
+        }));
+        setOptions(options);
+        setError('');
+        setLoading(false);
+      } catch (err) {
+        if (err.response) {
+          if (err.response.status === 429) {
+            setError('YouTube API Quota exceeded');
+          }
+        }
         setLoading(false);
         setOptions([]);
-        setError(response.data.message);
-        return;
       }
-      console.log(response.data);
-      const options = response.data.map(option => ({
-        label: option.channelTitle,
-        value: option.channelId,
-      }));
-      setOptions(options);
-      setError('');
-      setLoading(false);
     })();
 
     return () => {
@@ -83,7 +91,7 @@ export default function SearchBar({
           className='grid grid-cols-[1fr,auto] gap-4'
         >
           <Input
-            ref={ref}
+            ref={inputRef}
             placeholder='Search a channel...'
             value={text}
             onChange={e => {
@@ -97,7 +105,7 @@ export default function SearchBar({
           </Button>
         </form>
         {open && (
-          <Card className='mt-3 shadow-lg dark:shadow-slate-900 max-h-72 z-50 absolute rounded-lg overflow-x-hidden flex flex-col items-stretch justify-start sm:-left-2 sm:right-0 -left-6 -right-10 py-2'>
+          <Card className='mt-3 shadow-lg  max-h-72 z-50 absolute rounded-lg overflow-x-hidden flex flex-col items-stretch justify-start sm:-left-2 sm:right-0 -left-6 -right-10 py-2'>
             {options.length > 0 ? (
               <>
                 {options.map(option => (
@@ -107,9 +115,11 @@ export default function SearchBar({
                     className='justify-start '
                     key={option.value}
                     onClick={() => {
-                      setText(option.label);
-                      setChannelId(option.value);
-                      inputFocus();
+                      // setText(option.label);
+                      // setChannelId(option.value);
+                      // inputFocus();
+                      buttonHandler(option.value);
+                      // channelActions();
                     }}
                   >
                     <p className='truncate'>{option.label}</p>
@@ -125,7 +135,7 @@ export default function SearchBar({
                     'Nothing to search'}
                   {!loading && !error && text.length !== 0 && 'No results'}
                   {loading && !error && 'Searching...'}
-                  {!loading && error}
+                  {!loading && error && 'Oops! YouTube API quota exceeded'}
                 </p>
               </div>
             )}

@@ -2,16 +2,16 @@ import AnalysisCard from '@/components/AnalysisCard';
 import AnalysisChart from '@/components/AnalysisChart';
 import { getSentiments } from '@/lib/requests';
 import useSWRImmutable from 'swr/immutable';
+import AnalysisLoader from './AnalysisLoader';
+import ErrorBlock from './ErrorBlock';
 
-export default function Analysis({ data, videoTitle, videoId }) {
-  console.log(videoId);
-  console.log(data[0]);
+export default function Analysis({ videoTitle, videoId }) {
   const {
     data: videoDetail,
     isLoading,
     error,
   } = useSWRImmutable(`/sentiments/${videoId}`, getSentiments);
-  console.log(videoDetail, isLoading);
+
   return (
     <>
       {!isLoading && !error && videoDetail ? (
@@ -43,9 +43,9 @@ export default function Analysis({ data, videoTitle, videoId }) {
           />
         </div>
       ) : (
-        <div className='h-40 flex items-center justify-center'>
-          {error && error.message}
-          {isLoading && !error && 'Analyzing data...'}
+        <div className='h-80 flex items-center justify-center'>
+          {error && !isLoading && <ErrorBlock message={error.message} />}
+          {isLoading && <AnalysisLoader interval={2500} />}
         </div>
       )}
     </>
