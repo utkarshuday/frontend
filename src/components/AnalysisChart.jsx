@@ -53,7 +53,6 @@ export default function AnalysisChart({ reactions, videoTitle }) {
               axisLine={false}
               tickMargin={2}
               interval={'preserveStartEnd'}
-              // fontSize={}
               tickFormatter={value => value.slice(0, 15)}
             />
             <ChartTooltip

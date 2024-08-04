@@ -7,18 +7,13 @@ export async function getStats(route) {
     const res = await axios.get(`${URL}${route}`);
     return res.data;
   } catch (err) {
-    if (err.response) {
-      if (err.response.status === 429) {
-        throw new Error('YouTube API Quota exceeded');
-      }
+    if (err.response && err.response.status === 429) {
+      throw new Error('YouTube API Quota exceeded');
+    } else if (err.request) {
+      throw new Error('Sorry! Backend is down');
     }
     throw new Error('Unexpected error occured');
   }
-}
-
-export async function getTaskId(route) {
-  const res = await axios.get(`${URL}${route}`);
-  return res.data;
 }
 
 export async function pollTask(taskId) {
@@ -54,10 +49,10 @@ export async function getSentiments(route) {
     const result = await pollTask(res.data.id);
     return result;
   } catch (err) {
-    if (err.response) {
-      if (err.response.status === 429) {
-        throw new Error('YouTube API Quota exceeded');
-      }
+    if (err.response && err.response.status === 429) {
+      throw new Error('YouTube API Quota exceeded');
+    } else if (err.request) {
+      throw new Error('Sorry! Backend is down');
     }
     throw new Error('Unexpected error occured');
   }

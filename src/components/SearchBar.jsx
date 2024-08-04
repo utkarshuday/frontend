@@ -68,10 +68,12 @@ export default function SearchBar({
         setError('');
         setLoading(false);
       } catch (err) {
-        if (err.response) {
-          if (err.response.status === 429) {
-            setError('YouTube API Quota exceeded');
-          }
+        if (err.response && err.response.status === 429) {
+          setError('Oops! YouTube API quota exceeded');
+        } else if (err.request) {
+          setError('Sorry! Backend is down');
+        } else {
+          setError('Unexpected error occurred');
         }
         setLoading(false);
         setOptions([]);
@@ -114,13 +116,7 @@ export default function SearchBar({
                     variant='ghost'
                     className='justify-start '
                     key={option.value}
-                    onClick={() => {
-                      // setText(option.label);
-                      // setChannelId(option.value);
-                      // inputFocus();
-                      buttonHandler(option.value);
-                      // channelActions();
-                    }}
+                    onClick={() => buttonHandler(option.value)}
                   >
                     <p className='truncate'>{option.label}</p>
                   </Button>
@@ -135,7 +131,7 @@ export default function SearchBar({
                     'Nothing to search'}
                   {!loading && !error && text.length !== 0 && 'No results'}
                   {loading && !error && 'Searching...'}
-                  {!loading && error && 'Oops! YouTube API quota exceeded'}
+                  {!loading && error}
                 </p>
               </div>
             )}
