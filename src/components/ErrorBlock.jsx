@@ -1,6 +1,8 @@
-function ErrorBlock({ message }) {
+import { cn } from '@/lib/utils';
+
+function ErrorBlock({ message, className }) {
   return (
-    <div role='alert'>
+    <div role='alert' className={cn(className)}>
       <div className='bg-destructive text-white font-bold rounded-t px-4 py-2'>
         Error
       </div>
