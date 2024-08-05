@@ -10,48 +10,7 @@ import { Button } from '../ui/button';
 import { MoreHorizontal } from 'lucide-react';
 export const columns = [
   {
-    accessorKey: 'published',
-    header: 'Upload Date',
-    cell: ({ row }) => {
-      return (
-        <div className='truncate'>
-          {format(new Date(row.getValue('published')), 'PPP')}
-        </div>
-      );
-    },
-  },
-  {
-    accessorKey: 'title',
-    header: 'Title',
-    enableHiding: false,
-    cell: ({ row }) => {
-      return (
-        <div className='truncate max-w-[450px]'>{row.getValue('title')}</div>
-      );
-    },
-  },
-  {
-    accessorKey: 'views',
-    header: 'Views',
-    cell: ({ row }) => {
-      return row.getValue('views').toLocaleString('en-IN');
-    },
-  },
-  {
-    accessorKey: 'likes',
-    header: 'Likes',
-    cell: ({ row }) => {
-      return row.getValue('likes').toLocaleString('en-IN');
-    },
-  },
-  {
-    accessorKey: 'comments',
-    header: 'Comments',
-    cell: ({ row }) => {
-      return row.getValue('comments').toLocaleString('en-IN');
-    },
-  },
-  {
+    header: 'Actions',
     id: 'actions',
     enableHiding: false,
     cell: ({ row, table }) => {
@@ -76,6 +35,50 @@ export const columns = [
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+      );
+    },
+  },
+
+  {
+    accessorKey: 'title',
+    header: 'Title',
+    enableHiding: false,
+    cell: ({ row }) => {
+      return (
+        <div className='truncate max-w-[450px]'>{row.getValue('title')}</div>
+      );
+    },
+  },
+
+  {
+    accessorKey: 'views',
+    header: 'Views',
+    cell: ({ row }) => {
+      return row.getValue('views').toLocaleString('en-IN');
+    },
+  },
+  {
+    accessorKey: 'likes',
+    header: 'Likes',
+    cell: ({ row }) => {
+      return row.getValue('likes').toLocaleString('en-IN');
+    },
+  },
+  {
+    accessorKey: 'comments',
+    header: 'Comments',
+    cell: ({ row }) => {
+      return row.getValue('comments').toLocaleString('en-IN');
+    },
+  },
+  {
+    accessorKey: 'published',
+    header: 'Upload Date',
+    cell: ({ row }) => {
+      return (
+        <div className='truncate'>
+          {format(new Date(row.getValue('published')), 'PPP')}
+        </div>
       );
     },
   },
