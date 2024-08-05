@@ -6,7 +6,7 @@ import ChannelDetails from '@/components/ChannelDetails';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import useTable from '@/lib/hooks/useTable';
 import ColumnSelector from '@/components/table/ColumnSelector';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import TopStats from '@/components/TopCharts';
 import Analysis from '../components/Analysis';
 import AnalysisInput from '@/components/AnalysisInput';
@@ -42,8 +42,9 @@ export default function Home({
 
   useEffect(() => {
     if (!isLoading && data) {
-      setVideoId(data.videoDetails[0].id);
-      setVideoTitle(data.videoDetails[0].title);
+      const video = data.videoDetails.find(video => video.comments !== 0);
+      setVideoId(video.id);
+      setVideoTitle(video.title);
     }
   }, [isLoading, data]);
 
@@ -57,6 +58,12 @@ export default function Home({
     columns,
     onSearching,
   });
+
+  const filteredVideos = useMemo(() => {
+    if (!data?.videoDetails) return [];
+    return data.videoDetails.filter(video => video.comments !== 0);
+  }, [data]);
+
   return (
     <div className='max-w-[1200px] mx-auto sm:p-5 p-3'>
       {!isLoading && !error && data ? (
@@ -72,10 +79,7 @@ export default function Home({
                 </TabsList>
                 {value === 'table' && <ColumnSelector table={table} />}
                 {value === 'sentiment' && (
-                  <AnalysisInput
-                    data={data.videoDetails}
-                    search={onSearching}
-                  />
+                  <AnalysisInput data={filteredVideos} search={onSearching} />
                 )}
               </div>
               <TabsContent value='table'>

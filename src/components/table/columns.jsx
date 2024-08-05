@@ -27,6 +27,7 @@ export const columns = [
           <DropdownMenuContent align='end'>
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
+              disabled={!row.getValue('comments')}
               onClick={() =>
                 table.options.meta.onSearching(channel.id, channel.title)
               }
