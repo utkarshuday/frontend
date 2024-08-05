@@ -70,10 +70,6 @@ export default function SearchBar({
       } catch (err) {
         if (err.response && err.response.status === 429) {
           setError('Oops! YouTube API quota exceeded');
-        } else if (err.request) {
-          setError('Sorry! Backend is down');
-        } else {
-          setError('Unexpected error occurred');
         }
         setLoading(false);
         setOptions([]);
